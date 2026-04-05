@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Laboratório de Palavras | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        /* ------------------------------------------------------------
+           DASHBOARD UI DESIGN SYSTEM
+        ------------------------------------------------------------ */
+        :root {
+            --bg-primary: #0A0C0F;
+            --bg-secondary: #111316;
+            --bg-card: #121418;
+            --bg-elevated: #1A1D24;
+            --bg-sidebar: rgba(10, 12, 15, 0.96);
+            --text-primary: #EDEDF0;
+            --text-secondary: #B0B4C0;
+            --text-muted: #7A7E8A;
+            --accent-primary: #3A7A8A;
+            --accent-secondary: #A07080;
+            --accent-light: rgba(58, 122, 138, 0.12);
+            --accent-glow: rgba(58, 122, 138, 0.25);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-light: rgba(255, 255, 255, 0.03);
+            --success: #2E7D64;
+            --warning: #B8860B;
+            --info: #3A7A8A;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.6);
+            --shadow-glow: 0 0 30px rgba(58, 122, 138, 0.25);
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --sidebar-width: 260px;
+            --header-height: 64px;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #F5F7FA;
+            --bg-secondary: #FFFFFF;
+            --bg-card: #FFFFFF;
+            --bg-elevated: #F0F2F5;
+            --bg-sidebar: rgba(255, 255, 255, 0.98);
+            --text-primary: #1A1C1E;
+            --text-secondary: #4A4C50;
+            --text-muted: #8A8C90;
+            --accent-primary: #2A5F6E;
+            --accent-secondary: #8B5E6E;
+            --accent-light: rgba(42, 95, 110, 0.08);
+            --accent-glow: rgba(42, 95, 110, 0.12);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --border-light: rgba(0, 0, 0, 0.04);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12);
+            --shadow-glow: 0 0 20px rgba(42, 95, 110, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition-smooth);
+            font-feature-settings: "calt", "ss02", "kern";
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ============================================================
+           DASHBOARD LAYOUT
+        ============================================================ */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: var(--transition-smooth);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo .accent {
+            color: var(--accent-primary);
+        }
+
+        .nav-menu {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .nav-item:hover {
+            background: var(--accent-light);
+            color: var(--accent-primary);
+        }
+
+        .nav-item.active {
+            background: var(--accent-light);
+            color: var(--accent-primary);
+            border-left: 2px solid var(--accent-primary);
+        }
+
+        .sidebar-footer {
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+
+        .theme-toggle {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.6rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-light);
+            color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        .dashboard-header {
+            position: sticky;
+            top: 0;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 90;
+            backdrop-filter: blur(8px);
+        }
+
+        .header-title h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .header-title p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notification-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: var(--transition-smooth);
+        }
+
+        .notification-btn:hover {
+            background: var(--accent-light);
+            color: var(--accent-primary);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        /* DASHBOARD CARDS */
+        .dashboard-container {
+            padding: 2rem;
+        }
+
+        /* KPI CARDS */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.25rem;
+            transition: var(--transition-smooth);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .kpi-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .kpi-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--accent-primary);
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .kpi-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .kpi-change {
+            font-size: 0.7rem;
+            color: var(--success);
+        }
+
+        /* PROJECTS SECTION */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .view-all {
+            font-size: 0.75rem;
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.25rem;
+            transition: var(--transition-smooth);
+        }
+
+        .project-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .project-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: var(--accent-primary);
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .project-status {
+            font-size: 0.65rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            background: var(--accent-light);
+            color: var(--accent-primary);
+        }
+
+        .project-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-card p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.75rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-primary);
+            border-radius: 4px;
+            width: 0%;
+        }
+
+        /* RECENT ACTIVITY */
+        .activity-list {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-light);
+            transition: var(--transition-smooth);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-item:hover {
+            background: var(--accent-light);
+        }
+
+        .activity-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: var(--accent-primary);
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .projects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 200;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-header {
+                padding: 1rem;
+            }
+            .dashboard-container {
+                padding: 1rem;
+            }
+            .mobile-menu-btn {
+                display: flex;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-primary);
+            padding: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <a href="#">Laboratório de <span class="accent">Palavras</span></a>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-section="overview">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    Visão Geral
+                </a>
+                <a href="#" class="nav-item" data-section="projetos">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/><circle cx="12" cy="12" r="2"/></svg>
+                    Projetos
+                </a>
+                <a href="#" class="nav-item" data-section="conteudos">
+                    <svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                    Conteúdos
+                </a>
+                <a href="#" class="nav-item" data-section="analytics">
+                    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    Analytics
+                </a>
+                <a href="#" class="nav-item" data-section="configuracoes">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Configurações
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="theme-toggle" id="themeToggle">
+                    <svg viewBox="0 0 24 24" width="14" height="14"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    Alternar tema
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-title">
+                    <h1>Visão Geral</h1>
+                    <p>Laboratório de Palavras — Dashboard editorial</p>
+                </div>
+                <div class="header-actions">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                    <button class="notification-btn">
+                        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    </button>
+                    <div class="user-avatar">LP</div>
+                </div>
+            </header>
+
+            <div class="dashboard-container" id="dashboardContent">
+                <!-- KPI CARDS -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Projetos ativos</span>
+                            <div class="kpi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg></div>
+                        </div>
+                        <div class="kpi-value">12</div>
+                        <div class="kpi-change">+2 este mês</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Conteúdos produzidos</span>
+                            <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/></svg></div>
+                        </div>
+                        <div class="kpi-value">47</div>
+                        <div class="kpi-change">+12 esta semana</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Taxa de aprovação</span>
+                            <div class="kpi-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                        </div>
+                        <div class="kpi-value">94%</div>
+                        <div class="kpi-change">+3% vs mês anterior</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Revisões pendentes</span>
+                            <div class="kpi-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                        </div>
+                        <div class="kpi-value">3</div>
+                        <div class="kpi-change">Dentro do prazo</div>
+                    </div>
+                </div>
+
+                <!-- PROJECTS SECTION -->
+                <div class="section-header">
+                    <h2 class="section-title">Projetos em curso</h2>
+                    <a href="#" class="view-all">Ver todos →</a>
+                </div>
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-header">
+                            <div class="project-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/></svg></div>
+                            <span class="project-status">Em andamento</span>
+                        </div>
+                        <h3>Arquitectura de Conteúdo</h3>
+                        <p>Estratégias de organização textual para marcas com exigência comunicacional.</p>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 75%"></div></div>
+                        <div class="project-meta">
+                            <span>75% concluído</span>
+                            <span>Entrega: 15/04</span>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-header">
+                            <div class="project-icon"><svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></div>
+                            <span class="project-status">Revisão</span>
+                        </div>
+                        <h3>Escrita Aumentada</h3>
+                        <p>Laboratório de prompt engineering e geração assistida de conteúdo editorial.</p>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 90%"></div></div>
+                        <div class="project-meta">
+                            <span>90% concluído</span>
+                            <span>Entrega: 22/03</span>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-header">
+                            <div class="project-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+                            <span class="project-status">Planeamento</span>
+                        </div>
+                        <h3>Sistemas de Voz</h3>
+                        <p>Construção de identidade verbal e sistemas de tom para agentes de IA.</p>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 30%"></div></div>
+                        <div class="project-meta">
+                            <span>30% concluído</span>
+                            <span>Entrega: 30/05</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECENT ACTIVITY -->
+                <div class="section-header">
+                    <h2 class="section-title">Atividade recente</h2>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/></svg></div>
+                        <div class="activity-content">
+                            <div class="activity-title">Novo projeto: Arquitectura de Conteúdo</div>
+                            <div class="activity-time">Há 2 horas</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon"><svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></div>
+                        <div class="activity-content">
+                            <div class="activity-title">Revisão concluída: Escrita Aumentada</div>
+                            <div class="activity-time">Há 5 horas</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+                        <div class="activity-content">
+                            <div class="activity-title">Nova fase: Sistemas de Voz — planeamento</div>
+                            <div class="activity-time">Há 1 dia</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        (function() {
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const root = document.documentElement;
+            
+            function setTheme(theme) {
+                if (theme === 'light') {
+                    root.setAttribute('data-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    root.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+            
+            const savedTheme = localStorage.getItem('theme');
+            setTheme(savedTheme === 'light' ? 'light' : 'dark');
+            
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    const isLight = root.getAttribute('data-theme') === 'light';
+                    setTheme(isLight ? 'dark' : 'light');
+                });
+            }
+            
+            // Mobile menu
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const sidebar = document.getElementById('sidebar');
+            if (mobileBtn && sidebar) {
+                mobileBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('open');
+                });
+            }
+            
+            // Navigation
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = {
+                overview: `
+                    <div class="kpi-grid">
+                        <div class="kpi-card"><div class="kpi-header"><span class="kpi-title">Projetos ativos</span><div class="kpi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg></div></div><div class="kpi-value">12</div><div class="kpi-change">+2 este mês</div></div>
+                        <div class="kpi-card"><div class="kpi-header"><span class="kpi-title">Conteúdos produzidos</span><div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/></svg></div></div><div class="kpi-value">47</div><div class="kpi-change">+12 esta semana</div></div>
+                        <div class="kpi-card"><div class="kpi-header"><span class="kpi-title">Taxa de aprovação</span><div class="kpi-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div><div class="kpi-value">94%</div><div class="kpi-change">+3% vs mês anterior</div></div>
+                        <div class="kpi-card"><div class="kpi-header"><span class="kpi-title">Revisões pendentes</span><div class="kpi-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div></div><div class="kpi-value">3</div><div class="kpi-change">Dentro do prazo</div></div>
+                    </div>
+                    <div class="section-header"><h2 class="section-title">Projetos em curso</h2><a href="#" class="view-all">Ver todos →</a></div>
+                    <div class="projects-grid">
+                        <div class="project-card"><div class="project-header"><div class="project-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/></svg></div><span class="project-status">Em andamento</span></div><h3>Arquitectura de Conteúdo</h3><p>Estratégias de organização textual para marcas com exigência comunicacional.</p><div class="progress-bar"><div class="progress-fill" style="width: 75%"></div></div><div class="project-meta"><span>75% concluído</span><span>Entrega: 15/04</span></div></div>
+                        <div class="project-card"><div class="project-header"><div class="project-icon"><svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></div><span class="project-status">Revisão</span></div><h3>Escrita Aumentada</h3><p>Laboratório de prompt engineering e geração assistida de conteúdo editorial.</p><div class="progress-bar"><div class="progress-fill" style="width: 90%"></div></div><div class="project-meta"><span>90% concluído</span><span>Entrega: 22/03</span></div></div>
+                        <div class="project-card"><div class="project-header"><div class="project-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="project-status">Planeamento</span></div><h3>Sistemas de Voz</h3><p>Construção de identidade verbal e sistemas de tom para agentes de IA.</p><div class="progress-bar"><div class="progress-fill" style="width: 30%"></div></div><div class="project-meta"><span>30% concluído</span><span>Entrega: 30/05</span></div></div>
+                    </div>
+                    <div class="section-header"><h2 class="section-title">Atividade recente</h2></div>
+                    <div class="activity-list"><div class="activity-item"><div class="activity-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/></svg></div><div class="activity-content"><div class="activity-title">Novo projeto: Arquitectura de Conteúdo</div><div class="activity-time">Há 2 horas</div></div></div><div class="activity-item"><div class="activity-icon"><svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></div><div class="activity-content"><div class="activity-title">Revisão concluída: Escrita Aumentada</div><div class="activity-time">Há 5 horas</div></div></div><div class="activity-item"><div class="activity-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="activity-content"><div class="activity-title">Nova fase: Sistemas de Voz — planeamento</div><div class="activity-time">Há 1 dia</div></div></div></div>
+                `,
+                projetos: `<div style="text-align: center; padding: 4rem;"><h2>Projetos</h2><p style="color: var(--text-secondary); margin-top: 1rem;">Lista completa de projetos em desenvolvimento.</p></div>`,
+                conteudos: `<div style="text-align: center; padding: 4rem;"><h2>Conteúdos</h2><p style="color: var(--text-secondary); margin-top: 1rem;">Biblioteca de conteúdos produzidos.</p></div>`,
+                analytics: `<div style="text-align: center; padding: 4rem;"><h2>Analytics</h2><p style="color: var(--text-secondary); margin-top: 1rem;">Métricas e indicadores de desempenho.</p></div>`,
+                configuracoes: `<div style="text-align: center; padding: 4rem;"><h2>Configurações</h2><p style="color: var(--text-secondary); margin-top: 1rem;">Preferências do sistema.</p></div>`
+            };
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = item.getAttribute('data-section');
+                    const headerTitle = document.querySelector('.header-title h1');
+                    const headerSubtitle = document.querySelector('.header-title p');
+                    
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    if (section === 'overview') {
+                        headerTitle.textContent = 'Visão Geral';
+                        headerSubtitle.textContent = 'Laboratório de Palavras — Dashboard editorial';
+                        document.getElementById('dashboardContent').innerHTML = sections.overview;
+                    } else if (section === 'projetos') {
+                        headerTitle.textContent = 'Projetos';
+                        headerSubtitle.textContent = 'Gestão de projetos editoriais';
+                        document.getElementById('dashboardContent').innerHTML = sections.projetos;
+                    } else if (section === 'conteudos') {
+                        headerTitle.textContent = 'Conteúdos';
+                        headerSubtitle.textContent = 'Biblioteca de conteúdos';
+                        document.getElementById('dashboardContent').innerHTML = sections.conteudos;
+                    } else if (section === 'analytics') {
+                        headerTitle.textContent = 'Analytics';
+                        headerSubtitle.textContent = 'Métricas e indicadores';
+                        document.getElementById('dashboardContent').innerHTML = sections.analytics;
+                    } else if (section === 'configuracoes') {
+                        headerTitle.textContent = 'Configurações';
+                        headerSubtitle.textContent = 'Preferências do sistema';
+                        document.getElementById('dashboardContent').innerHTML = sections.configuracoes;
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
