@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Laboratório de Palavras | Dashboard</title>
+    <title>Laboratório de Palavras | Dashboard UI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
         /* ------------------------------------------------------------
-           DASHBOARD UI DESIGN SYSTEM
+           DESIGN SYSTEM - DASHBOARD UI PREMIUM
         ------------------------------------------------------------ */
         :root {
             --bg-primary: #0A0C0F;
@@ -34,6 +34,7 @@
             --transition-smooth: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             --sidebar-width: 260px;
+            --sidebar-width-collapsed: 72px;
             --header-height: 64px;
         }
 
@@ -76,14 +77,14 @@
         }
 
         /* ============================================================
-           DASHBOARD LAYOUT
+           DASHBOARD LAYOUT - RESPONSIVE
         ============================================================ */
         .dashboard {
             display: flex;
             min-height: 100vh;
         }
 
-        /* SIDEBAR */
+        /* SIDEBAR - RESPONSIVE */
         .sidebar {
             position: fixed;
             left: 0;
@@ -98,6 +99,26 @@
             flex-direction: column;
             z-index: 100;
             transition: var(--transition-smooth);
+            transform: translateX(0);
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-width-collapsed);
+        }
+
+        .sidebar.collapsed .logo span:not(.accent),
+        .sidebar.collapsed .nav-item span,
+        .sidebar.collapsed .sidebar-footer .theme-toggle span {
+            display: none;
+        }
+
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding: 0.75rem;
+        }
+
+        .sidebar.collapsed .sidebar-footer .theme-toggle {
+            justify-content: center;
         }
 
         .logo {
@@ -107,6 +128,8 @@
             margin-bottom: 2rem;
             padding-bottom: 1rem;
             border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+            overflow: hidden;
         }
 
         .logo a {
@@ -136,6 +159,7 @@
             font-size: 0.85rem;
             font-weight: 500;
             transition: var(--transition-smooth);
+            white-space: nowrap;
         }
 
         .nav-item svg {
@@ -144,6 +168,7 @@
             stroke: currentColor;
             stroke-width: 1.5;
             fill: none;
+            flex-shrink: 0;
         }
 
         .nav-item:hover {
@@ -191,9 +216,14 @@
             flex: 1;
             margin-left: var(--sidebar-width);
             min-height: 100vh;
+            transition: margin-left 0.3s ease;
         }
 
-        /* HEADER */
+        .sidebar.collapsed ~ .main-content {
+            margin-left: var(--sidebar-width-collapsed);
+        }
+
+        /* HEADER RESPONSIVE */
         .dashboard-header {
             position: sticky;
             top: 0;
@@ -205,6 +235,8 @@
             align-items: center;
             z-index: 90;
             backdrop-filter: blur(8px);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .header-title h1 {
@@ -222,6 +254,22 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+        }
+
+        .sidebar-toggle {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: var(--transition-smooth);
+            display: none;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--accent-light);
+            color: var(--accent-primary);
         }
 
         .notification-btn {
@@ -251,15 +299,15 @@
             font-weight: 600;
         }
 
-        /* DASHBOARD CARDS */
+        /* DASHBOARD CONTENT */
         .dashboard-container {
             padding: 2rem;
         }
 
-        /* KPI CARDS */
+        /* KPI CARDS - GRID RESPONSIVA */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -317,6 +365,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .section-title {
@@ -332,7 +382,7 @@
 
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -356,6 +406,8 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .project-icon svg {
@@ -393,6 +445,8 @@
             align-items: center;
             font-size: 0.7rem;
             color: var(--text-muted);
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .progress-bar {
@@ -425,6 +479,7 @@
             padding: 1rem 1.25rem;
             border-bottom: 1px solid var(--border-light);
             transition: var(--transition-smooth);
+            flex-wrap: wrap;
         }
 
         .activity-item:last-child {
@@ -441,6 +496,7 @@
             stroke: var(--accent-primary);
             stroke-width: 1.5;
             fill: none;
+            flex-shrink: 0;
         }
 
         .activity-content {
@@ -458,8 +514,19 @@
             color: var(--text-muted);
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 1024px) {
+        /* ============================================================
+           RESPONSIVE BREAKPOINTS
+        ============================================================ */
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                padding: 1.5rem;
+            }
+            .projects-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
             .kpi-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -469,76 +536,148 @@
         }
 
         @media (max-width: 768px) {
+            .sidebar-toggle {
+                display: flex;
+            }
+            
             .sidebar {
                 transform: translateX(-100%);
+                width: var(--sidebar-width);
                 z-index: 200;
             }
+            
             .sidebar.open {
                 transform: translateX(0);
             }
+            
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.collapsed.open {
+                transform: translateX(0);
+                width: var(--sidebar-width);
+            }
+            
             .main-content {
-                margin-left: 0;
+                margin-left: 0 !important;
             }
-            .kpi-grid {
-                grid-template-columns: 1fr;
-            }
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
+            
             .dashboard-header {
                 padding: 1rem;
             }
+            
             .dashboard-container {
                 padding: 1rem;
             }
-            .mobile-menu-btn {
-                display: flex;
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .activity-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-title h1 {
+                font-size: 1.1rem;
             }
         }
 
-        .mobile-menu-btn {
+        @media (max-width: 480px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .kpi-card {
+                padding: 1rem;
+            }
+            
+            .kpi-value {
+                font-size: 1.5rem;
+            }
+            
+            .project-card {
+                padding: 1rem;
+            }
+        }
+
+        /* OVERLAY PARA MOBILE */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 150;
             display: none;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            color: var(--text-primary);
-            padding: 0.5rem;
+        }
+        
+        .sidebar-overlay.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar-overlay.active {
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        
         <!-- SIDEBAR -->
         <aside class="sidebar" id="sidebar">
             <div class="logo">
-                <a href="#">Laboratório de <span class="accent">Palavras</span></a>
+                <a href="#">LP<span class="accent">.</span></a>
             </div>
             <nav class="nav-menu">
                 <a href="#" class="nav-item active" data-section="overview">
                     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                    Visão Geral
+                    <span>Visão Geral</span>
                 </a>
                 <a href="#" class="nav-item" data-section="projetos">
                     <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/><circle cx="12" cy="12" r="2"/></svg>
-                    Projetos
+                    <span>Projetos</span>
                 </a>
                 <a href="#" class="nav-item" data-section="conteudos">
                     <svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-                    Conteúdos
+                    <span>Conteúdos</span>
                 </a>
                 <a href="#" class="nav-item" data-section="analytics">
                     <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    Analytics
+                    <span>Analytics</span>
                 </a>
                 <a href="#" class="nav-item" data-section="configuracoes">
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                    Configurações
+                    <span>Configurações</span>
                 </a>
             </nav>
             <div class="sidebar-footer">
                 <button class="theme-toggle" id="themeToggle">
                     <svg viewBox="0 0 24 24" width="14" height="14"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                    Alternar tema
+                    <span>Alternar tema</span>
                 </button>
             </div>
         </aside>
@@ -551,8 +690,8 @@
                     <p>Laboratório de Palavras — Dashboard editorial</p>
                 </div>
                 <div class="header-actions">
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">
-                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    <button class="sidebar-toggle" id="sidebarToggle">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                     </button>
                     <button class="notification-btn">
                         <svg viewBox="0 0 24 24" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
@@ -702,14 +841,41 @@
                 });
             }
             
-            // Mobile menu
-            const mobileBtn = document.getElementById('mobileMenuBtn');
+            // Sidebar toggle para mobile
             const sidebar = document.getElementById('sidebar');
-            if (mobileBtn && sidebar) {
-                mobileBtn.addEventListener('click', () => {
-                    sidebar.classList.toggle('open');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            function closeSidebar() {
+                sidebar.classList.remove('open');
+                if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+            }
+            
+            function openSidebar() {
+                sidebar.classList.add('open');
+                if (sidebarOverlay) sidebarOverlay.classList.add('active');
+            }
+            
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', () => {
+                    if (sidebar.classList.contains('open')) {
+                        closeSidebar();
+                    } else {
+                        openSidebar();
+                    }
                 });
             }
+            
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeSidebar);
+            }
+            
+            // Fechar sidebar ao redimensionar para desktop
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    closeSidebar();
+                }
+            });
             
             // Navigation
             const navItems = document.querySelectorAll('.nav-item');
@@ -766,6 +932,11 @@
                         headerTitle.textContent = 'Configurações';
                         headerSubtitle.textContent = 'Preferências do sistema';
                         document.getElementById('dashboardContent').innerHTML = sections.configuracoes;
+                    }
+                    
+                    // Fechar sidebar após navegação no mobile
+                    if (window.innerWidth <= 768) {
+                        closeSidebar();
                     }
                 });
             });
